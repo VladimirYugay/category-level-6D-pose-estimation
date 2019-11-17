@@ -46,53 +46,48 @@ The authors of the paper propose not only an effective model for estimating the 
 
 ***Difference.*** In this approach, the authors propose a method for generating synthetic training data   considering real scenes and inserting synthetic objects in a more "realistic" places on the image. Moreover, the authors are focusing more on classes of smaller objects like mugs or laptops.
 
-##Method
+## Method
 
 As summary, we want to estimate 6D pose of objects from a fixed set of categories and we have no CAD models for unseen objects during test time. For unseen objects 6D pose is not well-defined and to add we need some way to represent it.
 
-###Normalized Object Coordinate Space (NOCS)
+### Normalized Object Coordinate Space (NOCS)
 NOCS is a 3D space contained withing a unit cube (each coordinate is between zero and one). For each of categories a separate NOCS space is defined. CAD model of each object of each categories (remember, we don't have CAD models only for unseen objects during test time!) is normalized such that its diagonal is equal to one and all the objects withing each categories are rotated in a same way.
 
 This is how an object from camera category looks like in NOCS space (here and further we'll set axis in NOCS space to represent RGB values):
 
+
+
 <br/>
-<center>
-![Alt text](NOCS.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 1, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas,Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR 19</div>
+<p align="center"><img src="images/NOCS.png" /></p>
+<p align="center" style="font-size:8px">Fig. 1, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas,Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR 19</p>
 <br/>
 
 
-###Network Architecture
+### Network Architecture
 The pose is estimated with the help of a neural network. However, in order to better understand how exactly it works, it's better to have a quick look at works on which this architecture is based.
 
 **Faster RCNN.** We'll skip the first two works of RCNN series and start considering Faster-RCNN [21] since it's more relevant for the method. Faster-RCNN is a network for object detection, which predicts the frame where the object is contained and class probabilities about what object is in the frame. The network extracts features from the whole image once, then a separate sub-network proposes regions where the object might be, features from these particular regions are further passed to another sub-network from which two heads output bounding box coordinates and class probabilities about which object is in the box. The cross-entropy loss is used for predicting class probabilities and soft L1 loss is used for box coordinates regression. Soft L1 loss is used to prevent gradient explosion.
 
 <br/>
-<center>
-![Alt text](faster-rcnn.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 2, Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks, Shaoqing Ren, Kaiming He, Ross Girshick, Jian Sun,  arXiv:1506.01497</div>
+<p align="center"><img src="images/faster-rcnn.png" /></p>
+<p align="center" style="font-size:8px">Fig. 2, Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks, Shaoqing Ren, Kaiming He, Ross Girshick, Jian Sun,  arXiv:1506.01497</p>
 <br/>
 
 
 **Mask RCNN.** An extension of Faster-RCNN is Mask-it it's computedRCNN [22]. Besides predicting class probabilities of the frame and coordinates of the box containing the object, Mask RCNN also predicts the mask of the object i.e. each object is colored with a color corresponding to his class. In terms of architecture, the only difference from Faster RCNN is that an additional head predicting masks is added. Cross-entropy loss is used for mask prediction since the problem of mask prediction is considered as pixel-wise classification problem.
 
 <br/>
-<center>
-![Alt text](mask-rcnn.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 3, Mask R-CNN, Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick,  arXiv:1703.06870</div>
+<p align="center"><img src="images/mask-rcnn.png" /></p>
+<p align="center" style="font-size:8px">Fig. 3, Mask R-CNN, Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick,  arXiv:1703.06870</p>
 <br/>
 
 
 **Proposed Architecture.** The architecture proposed for 6D pose estimation is based on Mask-RCNN. First, Additional head is added for predicting the NOCS coordinates of the object. After both segmentation mask and NOCS mask are obtained, two point clouds are constructed with the help of depth image. There's a nice [article](https://elcharolin.wordpress.com/2017/09/06/transforming-a-depth-map-into-a-3d-point-cloud/) explaining one way to convert 2D image and a depth image to the point cloud. After that translation and rotation computed such that after applying them to the NOCS point cloud it would be similar to the point segmentation mask point cloud in terms of euclidean distance. Both translation and rotations are estimated using Umeyama [23] algorithm.
 
+
 <br/>
-<center>
-![Alt text](nocs-nn.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 4, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/nocs-nn.png" /></p>
+<p align="center" style="font-size:8px">Fig. 4, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
 The NOCS coordinates prediction problem can be considered as either regression or classification task. For regression, NOCS coordinates are directly predicted, but in practice this way of predicting them is quite unstable. Instead, authors split the coordinate space along each of the axis in a certain number of bins. After that each pixel is classified i.e. referred to one of the bins. Experiments with both of the approaches can be seen in the later chapter.
@@ -102,10 +97,8 @@ Additionally, NOCS map loss for symmetric objects was higher when they were rota
 Here how NOCS map prediction and 6D estimation pose look like:
 
 <br/>
-<center>
-![Alt text](predictions.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 5, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/predictions.png" /></p>
+<p align="center" style="font-size:8px">Fig. 5, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
 
@@ -121,10 +114,9 @@ The authors introduce the new method for data generation - *Context Aware Mixed 
 
 **Context Aware Compositing.** In order to take context of the image into account and to put objects in "logical" places, first the planes where an object could be set were detected. Here's the detail [description](https://www.merl.com/publications/docs/TR2014-066.pdf) of the algorithm that was used for plane detection. After that random objects, locations and orientations were sampled and inserted into the real scene image. As the last step, several light sources were also added to the image. The whole composition was rendered using [Unity](https://unity.com/) engine.
 
-<center>
-![Alt text](camera.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 6, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+
+<p align="center"><img src="images/camera.png" /></p>
+<p align="center" style="font-size:12px">Fig. 6, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
 In addition to synthetic data, the dataset was augmented with real-world hand made data comprised of 8000 3D images, 18 scenes and 42 unique object instances. The *total* dataset consisted of 49 scenes, 308k 3D images and 9 object categories.
@@ -134,30 +126,22 @@ In addition to synthetic data, the dataset was augmented with real-world hand ma
 
 Mean average precision[26] metric was used for evaluating the model. There's a nice short [article](https://arxiv.org/pdf/1807.01696.pdf) explaining in a simple and efficient way. The 3D box detection and 6D estimation were considered separately to give a more clear view on the model performance. The threshold for 3D box detection was set to 50% and for 6D pose (5, 5). Threshold for the 6D pose means that predictions with error less than 5 for translation and 5 degrees for rotation were considered during evaluation. The evaluation was also shown separately on CAMERA dataset, hand made dataset and on Occluded-LINEMOD dataset.
 
-<center>
-![Alt text](camera_test.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 7, Test on CAMERA dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/camera_test.png" /></p>
+<p align="center" style="font-size:12px">Fig. 7, Test on CAMERA dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
-<center>
-![Alt text](real_test.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 8, Test on hand made dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/real_test.png" /></p>
+<p align="center" style="font-size:12px">Fig. 8, Test on hand made dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
-<center>
-![Alt text](occluded_test.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 9, Test on Occluded-LINEMOD dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/occluded_test.png" /></p>
+<p align="center" style="font-size:12px">Fig. 9, Test on Occluded-LINEMOD dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
 There were also experiments for various models setup: regression vs. classification for NOCS map prediction and different thresholds.
 
-<center>
-![Alt text](setup_test.png)
-</center>
-<div align="center" style="font-size:12px">Fig. 10, Model setup tests, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</div>
+<p align="center"><img src="images/setup_test.png" /></p>
+<p align="center" style="font-size:12px">Fig. 10, Model setup tests, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
 <br/>
 
 
