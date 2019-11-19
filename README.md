@@ -70,7 +70,7 @@ The pose is estimated with the help of a neural network. However, in order to be
 
 <br/>
 <p align="center"><img src="images/faster-rcnn.png" /></p>
-<p align="center" style="font-size:8px">Fig. 2, Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks, Shaoqing Ren, Kaiming He, Ross Girshick, Jian Sun,  arXiv:1506.01497</p>
+<p align="center"><sub>Fig. 2, Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks, Shaoqing Ren, Kaiming He, Ross Girshick, Jian Sun,  arXiv:1506.01497</sub></p>
 <br/>
 
 
@@ -78,7 +78,7 @@ The pose is estimated with the help of a neural network. However, in order to be
 
 <br/>
 <p align="center"><img src="images/mask-rcnn.png" /></p>
-<p align="center" style="font-size:8px">Fig. 3, Mask R-CNN, Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick,  arXiv:1703.06870</p>
+<p align="center"><sub>Fig. 3, Mask R-CNN, Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick,  arXiv:1703.06870</sub></p>
 <br/>
 
 
@@ -87,7 +87,7 @@ The pose is estimated with the help of a neural network. However, in order to be
 
 <br/>
 <p align="center"><img src="images/nocs-nn.png" /></p>
-<p align="center" style="font-size:8px">Fig. 4, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 4, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 The NOCS coordinates prediction problem can be considered as either regression or classification task. For regression, NOCS coordinates are directly predicted, but in practice this way of predicting them is quite unstable. Instead, authors split the coordinate space along each of the axis in a certain number of bins. After that each pixel is classified i.e. referred to one of the bins. Experiments with both of the approaches can be seen in the later chapter.
@@ -98,7 +98,7 @@ Here how NOCS map prediction and 6D estimation pose look like:
 
 <br/>
 <p align="center"><img src="images/predictions.png" /></p>
-<p align="center" style="font-size:8px">Fig. 5, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 5, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 
@@ -116,7 +116,7 @@ The authors introduce the new method for data generation - *Context Aware Mixed 
 
 
 <p align="center"><img src="images/camera.png" /></p>
-<p align="center" style="font-size:12px">Fig. 6, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 6, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 In addition to synthetic data, the dataset was augmented with real-world hand made data comprised of 8000 3D images, 18 scenes and 42 unique object instances. The *total* dataset consisted of 49 scenes, 308k 3D images and 9 object categories.
@@ -127,21 +127,21 @@ In addition to synthetic data, the dataset was augmented with real-world hand ma
 Mean average precision[26] metric was used for evaluating the model. There's a nice short [article](https://arxiv.org/pdf/1807.01696.pdf) explaining in a simple and efficient way. The 3D box detection and 6D estimation were considered separately to give a more clear view on the model performance. The threshold for 3D box detection was set to 50% and for 6D pose (5, 5). Threshold for the 6D pose means that predictions with error less than 5 for translation and 5 degrees for rotation were considered during evaluation. The evaluation was also shown separately on CAMERA dataset, hand made dataset and on Occluded-LINEMOD dataset.
 
 <p align="center"><img src="images/camera_test.png" /></p>
-<p align="center" style="font-size:12px">Fig. 7, Test on CAMERA dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 7, Test on CAMERA dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 <p align="center"><img src="images/real_test.png" /></p>
-<p align="center" style="font-size:12px">Fig. 8, Test on hand made dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 8, Test on hand made dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 <p align="center"><img src="images/occluded_test.png" /></p>
-<p align="center" style="font-size:12px">Fig. 9, Test on Occluded-LINEMOD dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 9, Test on Occluded-LINEMOD dataset, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 There were also experiments for various models setup: regression vs. classification for NOCS map prediction and different thresholds.
 
 <p align="center"><img src="images/setup_test.png" /></p>
-<p align="center" style="font-size:12px">Fig. 10, Model setup tests, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</p>
+<p align="center"><sub>Fig. 10, Model setup tests, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas, Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR</sub></p>
 <br/>
 
 
