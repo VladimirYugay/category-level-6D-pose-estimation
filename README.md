@@ -59,7 +59,7 @@ This is how an object from camera category looks like in NOCS space (here and fu
 
 <br/>
 <p align="center"><img src="images/NOCS.png" /></p>
-<p align="center" style="font-size:8px">Fig. 1, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas,Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR 19</p>
+<p align="center"><sub>Fig. 1, He Wang, Srinath Sridhar, Jingwei Huang, Julien Valentin, Shuran Song, Leonidas J. Guibas,Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation, CVPR 19</sub></p>
 <br/>
 
 
